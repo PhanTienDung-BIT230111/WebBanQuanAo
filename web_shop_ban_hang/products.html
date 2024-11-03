@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cửa Hàng Thời Trang</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+#wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Đảm bảo wrapper chiếm toàn bộ chiều cao */
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#menu {
+    display: flex;
+    gap: 30px;
+}
+
+#menu .item a {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.logo {
+    display: flex;
+    align-items: center; /* Căn giữa logo */
+}
+
+.logo i {
+    font-size: 24px;
+    color: #333;
+    margin-right: 10px; /* Khoảng cách giữa icon và tên */
+}
+
+#actions {
+    display: flex;
+    gap: 20px;
+    align-items: center; /* Căn giữa các mục trong actions */
+}
+
+#actions .item img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.3s; /* Hiệu ứng hover cho icon */
+}
+
+#actions .item img:hover {
+    transform: scale(1.1); /* Tăng kích thước khi hover */
+}
+
+.container {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    flex: 1; /* Chiếm không gian còn lại */
+}
+
+.menu {
+    width: 200px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.menu-item {
+    display: block;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    color: #666;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.menu-item.active {
+    background-color: #e9ecef;
+    color: #333;
+    font-weight: bold;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.search-filter-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.filter-section {
+    display: flex;
+    gap: 20px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    background: #fff;
+    border-radius: 8px;
+    position: relative;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.product-name {
+    font-size: 1.1em;
+    margin: 10px 0;
+    color: #333;
+}
+
+.product-price {
+    font-size: 1.2em;
+    color: #e44d26;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.add-to-cart {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease;
+}
+
+.add-to-cart:hover {
+    background: #45a049;
+}
+
+.cart-container {
+    position: fixed;
+    top: 0;
+    right: -400px; /* Giữ giỏ hàng bên ngoài màn hình */
+    width: 400px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    z-index: 1000;
+}
+
+.cart-container.active {
+    right: 0; /* Hiện giỏ hàng khi có class active */
+}
+
+.cart-header {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-cart {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.cart-items {
+    display: flex; /* Sử dụng Flexbox để sắp xếp các sản phẩm cạnh nhau */
+    flex-wrap: wrap; /* Cho phép xuống dòng khi không còn chỗ */
+    padding: 20px;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    gap: 15px; /* Khoảng cách giữa các sản phẩm */
+}
+
+.cart-item {
+    flex: 1 1 200px; /* Đặt kích thước tối thiểu cho mỗi sản phẩm */
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.cart-item:hover {
+    transform: translateY(-5px); /* Hiệu ứng hover cho sản phẩm */
+}
+
+.cart-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    background: #fff;
+}
+
+.cart-total {
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 12px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.checkout-btn:hover {
+    background: #45a049;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cart-container {
+        right: -100%; /* Đặt giỏ hàng bên ngoài màn hình */
+    }
+
+    .cart-container.active {
+        right: 0; /* Hiện giỏ hàng khi có class active */
+    }
+}
+
+/* Footer Styles */
+#footer {
+    background: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    position: relative; /* Thay đổi từ fixed sang relative để căn giữa */
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center; /* Căn giữa nội dung */
+    align-items: center;
+    flex-direction: column;
+    padding: 0 30px;
+}
+
+.social-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.contact-info p {
+    margin: 5px 0;
+    color: #ccc;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    .menu {
+        width: 100%;
+    }
+    
+    .cart-container {
+        width: 100%;
+    }
+}
+
+/* Hiển thị mô tả sản phẩm */
+.tooltip {
+    display: none; /* Bắt đầu ẩn tooltip */
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.9); /* Tăng độ tối của nền */
+    color: white;
+    padding: 15px; /* Tăng khoảng cách bên trong */
+    border-radius: 8px; /* Tăng độ cong của góc */
+    font-size: 14px;
+    max-width: 300px; /* Tăng chiều rộng tối đa */
+    z-index: 1000;
+    bottom: 100%; /* Đặt tooltip phía trên sản phẩm */
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 10px;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ */
+    transition: opacity 0.3s; /* Thêm hiệu ứng chuyển tiếp */
+    opacity: 0; /* Bắt đầu ẩn */
+}
+
+.product-card:hover .tooltip {
+    display: block; /* Hiện tooltip khi hover */
+    opacity: 1; /* Đưa tooltip vào trạng thái hiển thị */
+}
+
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="header">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-home" style="font-size: 24px; color: #333;"></i>
+            </a>                 
+            <div id="menu">
+                <div class="item"><a href="index.html">Trang chủ</a></div>
+                <div class="item"><a href="products.html">Sản phẩm</a></div>
+                <div class="item"><a href="contact.html">Liên hệ</a></div>
+            </div>
+            <div id="actions">
+                <div class="item"><img src="https://cdn-icons-png.flaticon.com/512/456/456283.png" alt="User"></div>
+                <div class="item"><img src="https://cdn-icons-png.flaticon.com/512/2838/2838895.png" alt="Cart"></div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="menu">
+                <h2>Danh Mục</h2>
+                <a href="#" class="menu-item active" data-category="all">Tất Cả Sản Phẩm</a>
+                <a href="#" class="menu-item" data-category="sports">Thể Thao</a>
+                <a href="#" class="menu-item" data-category="seasonal">Thời Trang</a>
+                <a href="#" class="menu-item" data-category="trending">Xu Hướng</a>
+                <a href="#" class="menu-item" data-category="luxury">Hàng Hiệu</a>
+            </div>
+
+            <div class="main-content">
+                <div class="search-filter-container">
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm...">
+                    </div>
+                    <div class="filter-section">
+                        <div class="price-filter">
+                            <label>Lọc giá:</label>
+                            <select id="price-filter">
+                                <option value="all">Tất cả</option>
+                                <option value="0-500000">Dưới 500,000₫</option>
+                                <option value="500000-1000000">500,000₫ - 1,000,000₫</option>
+                                <option value="1000000-5000000">1,000,000₫ - 5,000,000₫</option>
+                                <option value="5000000">Trên 5,000,000₫</option>
+                            </select>
+                        </div>
+                        <div class="sort-filter">
+                            <label>Sắp xếp:</label>
+                            <select id="sort-filter">
+                                <option value="default">Mặc định</option>
+                                <option value="price-asc">Giá tăng dần</option>
+                                <option value="price-desc">Giá giảm dần</option>
+                                <option value="name-asc">Tên A-Z</option>
+                                <option value="name-desc">Tên Z-A</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="products">
+                    <!-- Thể Thao -->
+                    <div class="product-card" data-category="sports" data-price="2999000" data-description="Giày thể thao Nike Air Max - Công nghệ đệm khí tiên tiến, êm ái khi vận động.">
+                        <img src="images/NikeAirMax.jpg" alt="Giày Nike Air Max" class="product-image">
+                        <h3 class="product-name">Giày Nike Air Max</h3>
+                        <div class="star-rating">★★★★☆</div>
+                        <div class="product-price">2,999,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="sports" data-price="1899000" data-description="Áo thể thao Adidas - Chất liệu thấm hút mồ hôi, thoáng mát khi vận động.">
+                        <img src="images/Áo thể thao Adidas.webp" alt="Áo Adidas" class="product-image">
+                        <h3 class="product-name">Áo thể thao Adidas</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">1,899,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="sports" data-price="1599000" data-description="Quần thể thao Puma - Thiết kế ôm sát, chất liệu co giãn tốt.">
+                        <img src="images/Quần thể thao Puma.jpg" alt="Quần Puma" class="product-image">
+                        <h3 class="product-name">Quần thể thao Puma</h3>
+                        <div class="star-rating">★★★★☆</div>
+                        <div class="product-price">1,599,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="sports" data-price="899000" data-description="Tất thể thao Nike Pro - Chất liệu thoáng khí, hỗ trợ tối đa cho đôi chân.">
+                        <img src="images/Tất thể thao Nike Pro.jpg" alt="Tất Nike" class="product-image">
+                        <h3 class="product-name">Tất thể thao Nike Pro</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">899,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <!-- Thời Trang -->
+                    <div class="product-card" data-category="seasonal" data-price="799000" data-description="Áo sơ mi nam Slim Fit - Chất liệu cotton cao cấp, form dáng ôm body thanh lịch.">
+                        <img src="images/Áo Sơ Mi Nam Slim Fit.webp" alt="Áo Sơ Mi" class="product-image">
+                        <h3 class="product-name">Áo Sơ Mi Nam Slim Fit</h3>
+                        <div class="star-rating">★★★★☆</div>
+                        <div class="product-price">799,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="seasonal" data-price="1299000" data-description="Quần Jeans Nam Skinny - Thiết kế trẻ trung, chất liệu co giãn thoải mái.">
+                        <img src="images/Quần Jeans Nam Skinny.webp" alt="Quần Jeans" class="product-image">
+                        <h3 class="product-name">Quần Jeans Nam Skinny</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">1,299,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="seasonal" data-price="599000" data-description="Áo Thun Basic - Thiết kế đơn giản, dễ phối đồ, chất liệu cotton mềm mại.">
+                        <img src="images/Áo Thun Basic.webp" alt="Áo Thun" class="product-image">
+                        <h3 class="product-name">Áo Thun Basic</h3>
+                        <div class="star-rating">★★★★☆</div>
+                        <div class="product-price">599,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="seasonal" data-price="899000" data-description="Áo Khoác Denim - Phong cách cá tính, chất liệu bền bỉ, phù hợp cho mùa thu.">
+                        <img src="images/Áo Khoác Denim.jpg" alt="Áo Khoác" class="product-image">
+                        <h3 class="product-name">Áo Khoác Denim</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">899,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <!-- Xu Hướng -->
+                    <div class="product-card" data-category="trending" data-price="1299000" data-description="Áo Hoodie Oversize - Phong cách đường phố, chất liệu nỉ dày dặn giữ ấm tốt.">
+                        <img src="images/Áo Hoodie Oversize.jpg" alt="Áo Hoodie" class="product-image">
+                        <h3 class="product-name">Áo Hoodie Oversize</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">1,299,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="trending" data-price="799000" data-description="Quần Cargo Pants - Thiết kế thoải mái, phù hợp với nhiều hoạt động.">
+                        <img src="images/Quần Cargo Pants.jpg" alt="Quần Cargo" class="product-image">
+                        <h3 class="product-name">Quần Cargo Pants</h3>
+                        <div class="star-rating">★★★★☆</div>
+                        <div class="product-price">799,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="trending" data-price="499000" data-description="Mũ Bucket Hat - Mũ thời trang, thoáng khí, thích hợp cho mùa hè. Chất liệu: Cotton. Kích thước: Một kích cỡ.">
+                        <img src="images/Mũ Bucket Hat.jpg" alt="Mũ Bucket" class="product-image">
+                        <h3 class="product-name">Mũ Bucket Hat</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">499,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="trending" data-price="1499000" data-description="Áo Crop Top Set - Phong cách trẻ trung, dễ phối hợp với nhiều trang phục.">
+                        <img src="images/Áo Crop Top Set.jpg" alt="Áo Crop Top" class="product-image">
+                        <h3 class="product-name">Áo Crop Top Set</h3>
+                        <div class="star-rating">★★★★☆</div>
+                        <div class="product-price">1,499,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <!-- Hàng Hiệu -->
+                    <div class="product-card" data-category="luxury" data-price="15990000" data-description="Túi xách Gucci authentic - Chất liệu da cao cấp, thiết kế độc quyền từ Ý.">
+                        <img src="images/Túi Xách Gucci.jpg" alt="Túi Gucci" class="product-image">
+                        <h3 class="product-name">Túi Xách Gucci</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">15,990,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="luxury" data-price="25990000" data-description="Đồng Hồ Rolex - Thiết kế sang trọng, chất liệu cao cấp, bảo hành chính hãng.">
+                        <img src="images/Đồng Hồ Rolex.jpg" alt="Đồng Hồ Rolex" class="product-image">
+                        <h3 class="product-name">Đồng Hồ Rolex</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">25,990,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="luxury" data-price="12990000" data-description="Giày Louis Vuitton - Thiết kế thời thượng, chất liệu da cao cấp, thương hiệu nổi tiếng.">
+                        <img src="images/Giày Louis Vuitton.jpg" alt="Giày LV" class="product-image">
+                        <h3 class="product-name">Giày Louis Vuitton</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">12,990,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>
+                    
+                    <div class="product-card" data-category="luxury" data-price="18990000" data-description="Kính Mát Chanel - Thiết kế thời trang, bảo vệ mắt tối ưu, phong cách quý phái.">
+                        <img src="images/Kính Mát Chanel.jpg" alt="Kính Chanel" class="product-image">
+                        <h3 class="product-name">Kính Mát Chanel</h3>
+                        <div class="star-rating">★★★★★</div>
+                        <div class="product-price">18,990,000₫</div>
+                        <button class="add-to-cart">Thêm vào giỏ hàng</button>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-container">
+            <div class="cart-header">
+                <h3>Giỏ hàng</h3>
+                <button class="close-cart">×</button>
+            </div>
+            <div class="cart-items">
+                <!-- Cart items will be dynamically added here -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    Tổng cộng: <span id="cart-total-amount">0₫</span>
+                </div>
+                <button class="checkout-btn">Thanh toán</button>
+                <div id="notification" style="display: none; color: green; font-weight: bold; position: fixed; top: 20px; right: 20px; background-color: #e0ffe0; border: 1px solid #4caf50; padding: 10px; border-radius: 5px; z-index: 1000;">
+                    Bạn đã mua hàng thành công!
+                </div>
+            </div>
+        </div>
+
+        <div id="footer">
+            <div class="footer-content">
+                <div class="social-links">
+                    <a href="https://facebook.com" target="_blank">Facebook</a> |
+                    <a href="https://instagram.com" target="_blank">Instagram</a> |
+                    <a href="https://twitter.com" target="_blank">Twitter</a>
+                </div>
+        
+                <div class="contact-info">
+                    <p>Contact us: 123-456-789 | Email: 10diembaitapnhom@cmc.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const menuItems = document.querySelectorAll('.menu-item');
+    const searchInput = document.getElementById('search-input');
+    const priceFilter = document.getElementById('price-filter');
+    const sortFilter = document.getElementById('sort-filter');
+    const products = document.querySelectorAll('.product-card');
+    let currentCategory = 'all';
+
+    // Thêm xử lý tooltip
+    products.forEach(product => {
+        const description = product.getAttribute('data-description');
+        if (description) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = description;
+            product.appendChild(tooltip);
+        }
+    });
+
+    // Xử lý chọn danh mục
+    menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            menuItems.forEach(mi => mi.classList.remove('active'));
+            this.classList.add('active');
+            currentCategory = this.getAttribute('data-category');
+            applyFilters();
+        });
+    });
+
+    // Xử lý tìm kiếm
+    searchInput.addEventListener('input', applyFilters);
+
+    // Xử lý lọc giá
+    priceFilter.addEventListener('change', applyFilters);
+
+    // Xử lý sắp xếp
+    sortFilter.addEventListener('change', applyFilters);
+
+    function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const priceRange = priceFilter.value;
+        const sortValue = sortFilter.value;
+        const products = document.querySelectorAll('.product-card');
+
+        products.forEach(product => {
+            const productName = product.querySelector('.product-name').textContent.toLowerCase();
+            const productPrice = parseInt(product.getAttribute('data-price'));
+            const productCategory = product.getAttribute('data-category');
+
+            let matchesSearch = productName.includes(searchTerm);
+            let matchesPrice = true;
+            let matchesCategory = currentCategory === 'all' || productCategory === currentCategory;
+
+            // Áp dụng lọc giá
+            if (priceRange !== 'all') {
+                const [min, max] = priceRange.split('-').map(Number);
+                if (max) {
+                    matchesPrice = productPrice >= min && productPrice <= max;
+                } else {
+                    matchesPrice = productPrice >= min;
+                }
+            }
+
+            // Hiển thị/ẩn sản phẩm
+            product.style.display = 
+                matchesSearch && matchesPrice && matchesCategory ? 'block' : 'none';
+        });
+
+        // Sắp xếp sản phẩm
+        sortProducts(sortValue);
+    }
+
+    function sortProducts(sortValue) {
+        const productsContainer = document.querySelector('.products');
+        const products = Array.from(document.querySelectorAll('.product-card'));
+
+        products.sort((a, b) => {
+            const priceA = parseInt(a.getAttribute('data-price'));
+            const priceB = parseInt(b.getAttribute('data-price'));
+            const nameA = a.querySelector('.product-name').textContent;
+            const nameB = b.querySelector('.product-name').textContent;
+
+            switch(sortValue) {
+                case 'price-asc':
+                    return priceA - priceB;
+                case 'price-desc':
+                    return priceB - priceA;
+                case 'name-asc':
+                    return nameA.localeCompare(nameB);
+                case 'name-desc':
+                    return nameB.localeCompare(nameA);
+                default:
+                    return 0;
+            }
+        });
+
+        // Xóa và thêm lại các sản phẩm theo thứ tự mới
+        products.forEach(product => productsContainer.appendChild(product));
+    }
+
+    // Xử lý giỏ hàng
+    const cartItems = [];
+    const cartContainer = document.querySelector('.cart-container');
+    const cartItemsContainer = document.querySelector('.cart-items');
+    const cartTotalAmount = document.getElementById('cart-total-amount');
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+
+    // Mở/đóng giỏ hàng
+    document.querySelector('#actions .item:last-child').addEventListener('click', () => {
+        cartContainer.classList.add('active');
+    });
+
+    document.querySelector('.close-cart').addEventListener('click', () => {
+        cartContainer.classList.remove('active');
+    });
+
+    // Thêm vào giỏ hàng
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const productCard = this.closest('.product-card');
+            const product = {
+                name: productCard.querySelector('.product-name').textContent,
+                price: parseInt(productCard.getAttribute('data-price')),
+                image: productCard.querySelector('.product-image').src
+            };
+
+            addToCart(product);
+        });
+    });
+
+    function addToCart(product) {
+        cartItems.push(product);
+        updateCart();
+        cartContainer.classList.add('active');
+    }
+
+    function updateCart() {
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+
+        if (cartItems.length === 0) {
+            cartItemsContainer.innerHTML = '<p>Giỏ hàng của bạn đang trống.</p>';
+        }
+
+        cartItems.forEach((item, index) => {
+            const cartItem = document.createElement('div');
+            cartItem.classList.add('cart-item');
+            cartItem.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover;">
+                <div class="cart-item-details">
+                    <h4>${item.name}</h4>
+                    <p>${item.price.toLocaleString()}₫</p>
+                </div>
+                <button onclick="removeFromCart(${index})">×</button>
+            `;
+            cartItemsContainer.appendChild(cartItem);
+            total += item.price;
+        });
+
+        cartTotalAmount.textContent = total.toLocaleString() + '₫';
+    }
+
+    // Thêm vào window để có thể gọi từ HTML
+    window.removeFromCart = function(index) {
+        cartItems.splice(index, 1);
+        updateCart();
+    };
+
+    // Xử lý thanh toán
+    document.querySelector('.checkout-btn').addEventListener('click', function() {
+        if (cartItems.length > 0) {
+            // Hiển thị thông báo
+            document.getElementById('notification').style.display = 'block';
+            
+            // Ẩn thông báo sau 3 giây
+            setTimeout(() => {
+                document.getElementById('notification').style.display = 'none';
+            }, 3000);
+
+            // Xóa tất cả sản phẩm trong giỏ hàng
+            cartItems.length = 0; 
+            updateCart(); // Cập nhật giỏ hàng
+            cartContainer.classList.remove('active'); // Đóng giỏ hàng
+        } else {
+            alert('Giỏ hàng của bạn đang trống!');
+        }
+    });
+});
+    </script>
+</body>
+</html>
